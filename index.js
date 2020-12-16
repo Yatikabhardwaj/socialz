@@ -34,7 +34,7 @@ app.use(session({
     //TODO: Change the secret before deployment in production mode
     secret: 'blahsomething',
     saveUninitialized: false,
-    reesave: false,
+    resave: false,
     cookie: {
         maxAge: (1000 * 60 * 100)
     }
@@ -42,6 +42,9 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+//checks whether a session cookie is present or not. Whenever any request comes, setAuthenticatedUser(middleware) will be called from passport-local-authentication and the user will be stored in locals. User will then be accessed in views
+app.use(passport.setAuthenticatedUser)
 
 //use express router
 app.use('/',require('./routes/index'));

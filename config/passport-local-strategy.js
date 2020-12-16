@@ -12,7 +12,7 @@ passport.use(new LocalStrategy({
         // find a user and establish the identity
         User.findOne({email:email}, function(err,user){
             if(err){
-                console.log('Error in finding user  -->Passport');
+                console.log('Error in finding user -->Passport');
                 return done(err);
             }
             if(!user ||user.password != password){
@@ -38,5 +38,26 @@ passport.deserializeUser(function(id,done){
         return done(null,user);
     });
 });
+
+// check if  the user is authenticated, function will be used as a middleware as it has all three arguments
+
+passport.checkAuthentication = function(req,res,next){
+    //if the user is signed in then pass on the request to the next function(controller's action)
+    if(req.isAuthenticated()){
+        return next();
+    }
+    //if user is not signed in
+    return res.redirect('/users/sign-in');
+};
+
+//set the user for the views, to check if the user is signed in or not
+passport.setAuthenticatedUser = function(req,res,next){
+    if(req.isAuthenticated()){
+        //req.user contains the current signed in user from the session cookie and we are just sending this to the locals for the views
+        res.locals.user = req.user;
+
+    }
+    next();
+}
 
 module.exports = passport;
